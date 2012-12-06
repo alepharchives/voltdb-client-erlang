@@ -1,4 +1,4 @@
-voltdb-client-erlang
-====================
+Erlvolt
+=======
 
 VoltDB Erlang Client Driver
