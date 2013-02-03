@@ -21,7 +21,7 @@
 %%%                                                                         %%%
 %%%-------------------------------------------------------------------------%%%
 %%%                                                                         %%%
-%%%    Erlvolt 0.3.00/alpha - an Erlang-VoltDB client API.                  %%%
+%%%    Erlvolt 0.3.01/alpha - an Erlang-VoltDB client API.                  %%%
 %%%                                                                         %%%
 %%%    This file is part of VoltDB.                                         %%%
 %%%    Copyright (C) 2008-2010 VoltDB, LLC http://www.voltdb.com            %%%

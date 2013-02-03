@@ -9,7 +9,7 @@
 %%% Changed     : 07 Jul 2012                                               %%%
 %%%-------------------------------------------------------------------------%%%
 %%%                                                                         %%%
-%%%    Erlvolt 0.3.00/alpha - an Erlang-VoltDB client API.                  %%%
+%%%    Erlvolt 0.3.01/alpha - an Erlang-VoltDB client API.                  %%%
 %%%                                                                         %%%
 %%%    This file is part of VoltDB.                                         %%%
 %%%    Copyright (C) 2008-2010 VoltDB, LLC http://www.voltdb.com            %%%
@@ -357,6 +357,7 @@ run() ->
     ?ERLUNIT_EQUAL(erlvolt:volt_decimal(null), <<-170141183460469231731687303715884105728:128>>),
     ?ERLUNIT_EQUAL(erlvolt:volt_decimal(-23325.23425), <<255,255,255,255,255,255,255,255,255,173,33,210,178,57,217,128>>),
     ?ERLUNIT_EQUAL(erlvolt:volt_decimal( 23325.23425), <<0,0,0,0,0,0,0,0,0,82,222,45,77,198,38,128>>),
+    erlunit:equal(erlvolt:volt_decimal(-23325.23425),  <<-1,-1,-1,-1,-1,-1,-1,-1,-1,-83,33,-46,-78,57,-39,-128>>, "Volt decimal -23325.23425"),
 
     ?ERLUNIT_EQUAL(erlvolt:volt_decimal( 1  ),                                     <<1000000000000:128>>),
     ?ERLUNIT_EQUAL(erlvolt:volt_decimal( 1.0),                                     <<1000000000000:128>>),
@@ -766,6 +767,27 @@ run() ->
     Array_Bin_2c = <<?VOLT_INTINT,0,2,0,0,0,1,0,0,0,2>>,
     ?ERLUNIT_EQUAL(erlvolt:volt_array(Array_Erl_2c), Array_Bin_2c),
 
+    %%% tiny ints (have different element count binary value size)
+
+    Array_Erl_7 = [ 1, 2 ],
+    Array_Bin_7 = <<?VOLT_TINYINT,0,0,0,2,1,2>>,
+    ?ERLUNIT_EQUAL(erlvolt:volt_array(?VOLT_TINYINT, Array_Erl_7), Array_Bin_7),
+
+    Array_Erl_7a = [ 0, 2 ],
+    Array_Bin_7a = <<?VOLT_TINYINT,0,0,0,2,0,2>>,
+    ?ERLUNIT_EQUAL(erlvolt:volt_array(?VOLT_TINYINT, Array_Erl_7a), Array_Bin_7a),
+
+    % Guesses integer: Array_Erl_7b = { voltarray, [ 1, 2 ]},
+
+    Array_Erl_7c = { voltarray, ?VOLT_TINYINT, [ 1, 2 ]},
+    Array_Bin_7c = <<?VOLT_TINYINT,0,0,0,2,1,2>>,
+    ?ERLUNIT_EQUAL(erlvolt:volt_array(Array_Erl_7c), Array_Bin_7c),
+
+    Array_Erl_7d = { voltarray, ?VOLT_TINYINT, [ 1, 2 ]},
+    Array_Bin_7d = <<?VOLT_TINYINT,0,2,0,0,0,1,0,0,0,2>>,
+    ?ERLUNIT_NOT_EQUAL_MSG(erlvolt:volt_array(Array_Erl_7d), Array_Bin_7d,
+    "Note: If this fails, by being equal, it means tiny is encoded like int."),
+
     %%% strings
 
     Array_Erl_3 = [ "1", "2" ],
@@ -850,7 +872,6 @@ run() ->
     Array_Erl_5d = { voltarray, ?VOLT_DECIMAL, [ -0.1, -2 ]},
     Array_Bin_5d = <<22,0,2,255,255,255,255,255,255,255,255,255,255,255,232,183,137,24,0,255,255,255,255,255,255,255,255,255,255,254,46,86,181,224,0>>, % TODO: verify binary (is blindly copied)
     ?ERLUNIT_EQUAL(erlvolt:volt_array(Array_Erl_5d), Array_Bin_5d),
-
 
     %%% nested arrays
 

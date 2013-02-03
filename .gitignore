@@ -1,0 +1,26 @@
+*.beam
+*.html
+ebin/*.beam
+ebin/*.app
+samples/*.beam
+*.dump
+priv/*.config
+*~
+# /doc
+.DS_Store
+*.orig
+*.rej
+log
+readme.edoc
+changes.edoc
+README.html
+test/*.beam
+test/*.html
+test/ct_run*
+test/variables-ct*
+test/ct_default.css
+bench.log
+bench.totals
+bench03
+bench03.erl
+benchview

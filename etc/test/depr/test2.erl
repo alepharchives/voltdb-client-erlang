@@ -21,7 +21,7 @@
 %%%                                                                         %%%
 %%%-------------------------------------------------------------------------%%%
 %%%                                                                         %%%
-%%%    Erlvolt 0.3.00/alpha - an Erlang-VoltDB client API.                  %%%
+%%%    Erlvolt 0.3.01/alpha - an Erlang-VoltDB client API.                  %%%
 %%%                                                                         %%%
 %%%    This file is part of VoltDB.                                         %%%
 %%%    Copyright (C) 2008-2010 VoltDB, LLC http://www.voltdb.com            %%%
@@ -114,7 +114,7 @@ run() ->
 	%%% --- pg. 9+10, VoltDB Client Wire Protocol Version 0, 05/05/10 ---
 	%%% Note: not using first four bytes: length is prepended by tcp_gen::send().
 	
-	?ERLUNIT_EQUAL(erlvolt:volt_login(Name_1, Password_1), LoginBin_1),
+	?ERLUNIT_EQUAL(erlvolt:volt_login("database", Name_1, Password_1), LoginBin_1),
 
 	%%%------------------------------------------------------------------------
 	%%% NOT ANY MORE: Captured Sample
@@ -129,7 +129,7 @@ run() ->
 	%%% NOT ANY MORE: aptured from helloworld sample of VoltDB 0.9.01. 
 	%%% Not using first four bytes as the length is prepended by tcp_gen::send().
 
-	?ERLUNIT_EQUAL(erlvolt:volt_login(Name_2, Password_2), LoginBin_2),
+	?ERLUNIT_EQUAL(erlvolt:volt_login("database", Name_2, Password_2), LoginBin_2),
 
 	% TODO: missing name or password, too long name or password (?)
 	% TODO: make real capture again or at least verify.
