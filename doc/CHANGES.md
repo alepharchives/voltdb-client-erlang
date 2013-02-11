@@ -1,13 +1,26 @@
 Changes
 =======
 
-**Release: 'Erlvolt 0.3.0'**
+**Release: 'Erlvolt 0.3.3'**
 **Author: H. Diedrich**
 **Production: Eonblast Corporation**
 **Copyright: (c) 2013 VoltDB, Inc**
 **Licence: MIT**
-**Date: Feb 02 2013**
+**Date: Feb 11 2013**
 
+0.3.3   11 Feb 2013  hd
+
+        * Compatibility
+        * Ease of Build
+
+        + add: R16 compatibility
+        + add: VoltDB 3 samples compatibility
+        + fix: make dialyzer 
+        + add: make make-test
+        + fix: empty table catch
+        + fix: status value
+        + fix: parallel.erl sample
+        + alt: cleanup
 
 0.3.02  03 Feb 2013  hd
 
@@ -21,6 +34,7 @@ Changes
         + add: benchmarks
         + add: new samples
         + add: new unit tests
+        + add: dialyzer checked
         + add: optional profiler
         + add: minute call options
         + add: more documentation

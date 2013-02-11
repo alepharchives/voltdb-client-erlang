@@ -1,6 +1,6 @@
 %%%-------------------------------------------------------------------------%%%
 %%% File        : etc/bench/bench.erl                                       %%%
-%%% Version     : 0.3.0/beta                                                %%%
+%%% Version     : 0.3/beta                                                  %%%
 %%% Description : Erlang VoltDB driver 'Hello' and 'Voter' benchmark        %%%
 %%% Copyright   : VoltDB, LLC - http://www.voltdb.com                       %%%
 %%% Production  : Eonblast Corporation - http://www.eonblast.com            %%%
@@ -14,7 +14,7 @@
 %%%                                                                         %%%
 %%%-------------------------------------------------------------------------%%%
 %%%                                                                         %%%
-%%%    Erlvolt 0.3.0/alpha - Erlang VoltDB client API.                      %%%
+%%%    Erlvolt 0.3/beta    - Erlang VoltDB client API.                      %%%
 %%%                                                                         %%%
 %%%    This file is part of VoltDB.                                         %%%
 %%%    Copyright (C) 2008-2013 VoltDB, LLC http://www.voltdb.com            %%%
@@ -267,7 +267,7 @@
          prep_hello/1, call_hello/5, done_hello/2,
          prep_voter/1, call_voter/5, done_voter/2,
          voter_return_text/1]).
--import(erlvolt).
+
 -include("erlvolt.hrl").
 
 -author("H. Diedrich <hd2010@eonblast.com>").
@@ -368,7 +368,7 @@ start_delay_loop(T0,I,Verbosity) ->
 
 client(ClientID, Bench, Prep, Call, Done, Mode, Rhythm, AVerbosity, Verbosity, DumpInterval, CallTarget, BurstSize, Delay, Slots, QueueSize, WaitTarget) ->
 
-    DumpFrequency = case ?ERLVOLT_PROFILER_DUMP_FUNCTION of dummy -> 'n/a'; _ -> 1000 / DumpInterval end,
+    DumpFrequency = dump_frequency(DumpInterval),
     Bursts = trunc(CallTarget / BurstSize),
     BurstSizeUse = case Rhythm of steady -> workers; bursts -> bursts end,
 
@@ -548,7 +548,7 @@ client(ClientID, Bench, Prep, Call, Done, Mode, Rhythm, AVerbosity, Verbosity, D
     catch
         throw:{ open_failed, _, _}=Why ->
             io:format("Failed to open server connection.~nIs the VoltDB server running and accessible?"),
-            io:format("Error details: ~n ~w ~w ~n ~p", [throw, Why, erlang:get_stack()]),
+            io:format("Error details: ~n ~w ~w ~n ~p", [throw, Why, erlang:get_stacktrace()]),
             exit({throw, Why})
     end.
 
@@ -562,7 +562,7 @@ wait_done(C) ->
 
 -ifdef(profile).
 drain(CallTarget) ->
-    receipts(CallTarget,0,0). %%% TODO: WAITPENDING, WAITQUEUED instead? Performance hit?
+    receipts(CallTarget,0,0). %%% 
 -else.
 drain(CallTarget) ->
     receipts(CallTarget,0,0).
@@ -585,6 +585,15 @@ receipts(Calls,Oks,Fails) ->
             io:format("~n~n~n*** Benchmark client receipt timeout (~p calls left to receive)~n~n",[Calls]),
             exit(client_receive_timeout)
     end.
+
+-ifdef(profile).
+dump_frequency(DumpInterval) ->
+    1000 / DumpInterval.
+-else.
+dump_frequency(_) ->
+    "n/a".
+-endif.
+
 
 %%%----------------------------------------------------------------------------
 %%% Log to Screen
@@ -762,7 +771,7 @@ call_voter(Parent, Calls, Link, Mode, Verbosity) ->
     end,
 
     R = (catch erlvolt:call_procedure(Link, "Vote", [Phone, Candidate, 20000], Opts)),
-    % trace(3, Verbosity, "Return: ~p~n", [voter_return_text(erlvolt:getOne(R))]),
+    % trace(3, Verbosity, "Return: ~p~n", [voter_return_text(erlvolt:get_one(R))]),
     react_to_response(R, Verbosity),
 
     call_voter(Parent, Calls-1, Link, Mode, Verbosity).
@@ -862,7 +871,7 @@ print_time(Prompt, Time, Append, VerbositySetting, VerbosityThreshold) when Verb
     io:format(Prompt ++ "~4..0B-~2..0B-~2..0B ~2..0B:~2..0B:~2..0B" ++ Append, [Y,M,D,H,I,S]);
 
 print_time(_,_,_,_,_) ->
-	
+
 	ok.
 
 human_time(Now) ->
